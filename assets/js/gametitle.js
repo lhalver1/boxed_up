@@ -2,6 +2,7 @@ var GameTitle = function(game){};
 
 var player;
 var dir;
+var thisScore;
 
 GameTitle.prototype = {
 
@@ -11,8 +12,15 @@ GameTitle.prototype = {
 	},
 
 	init: function(score) {
-		if (score !=0) {
+		if (score !=0 && typeof score != 'undefined') {
 			console.log("You scored: " + score);
+			window.gameScore = score;
+			thisScore = score;
+			var scoreFont = "80px Arial";
+	
+			this.scoreLabel = this.game.add.text((this.game.world.centerX), this.game.world.height - 100, "You Scored: " + thisScore, {font: scoreFont, fill: "#fff"}); 
+			this.scoreLabel.anchor.setTo(0.5, 0.5);
+			this.scoreLabel.align = 'center';
 		}
 	},
 
