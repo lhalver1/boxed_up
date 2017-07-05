@@ -17,7 +17,6 @@ Main.prototype = {
 		// Get the dimensions of the tile we are using
 		me.tileWidth = me.game.cache.getImage('tile').width;
 		me.tileHeight = me.game.cache.getImage('tile').height;
-		me.safeRec = me.tileHeight * 3;
 
 		// Set the background color to blue
 		me.game.stage.backgroundColor = '479CDE';
@@ -34,14 +33,14 @@ Main.prototype = {
 		
 		me.platforms = me.game.add.group();
 		me.platforms.enableBody = true;
-		me.platforms.createMultiple(20, 'tile'); // breakable tile
+		me.platforms.createMultiple(50, 'tile');
 
 		// me.breakables = me.game.add.group();
 		// me.breakables.enableBody = true;
 		// me.breakables.createMultiple(20, 'tile2'); // breakable tile
 
 		// Add an initial platform
-		me.addPlatform();
+		//me.addPlatform();
 		
 		// Add a platform every 3 seconds
 		me.timer = game.time.events.loop(3000, me.addPlatform, me);
@@ -60,10 +59,10 @@ Main.prototype = {
  
 		// Make the sprite jump when the up key is pushed
 		if(me.cursors.up.isDown) {
-			me.player.body.velocity.y -= 80;
+			me.player.body.velocity.y -= 120;//80;
 		}
 		if (me.game.input.pointer1.isDown) {
-			me.player.body.velocity.y -= 80;
+			me.player.body.velocity.y -= 120;//80;
 		}
 
 		if (me.platforms.centerX < me.player.centerX) {
@@ -72,7 +71,7 @@ Main.prototype = {
 
 		// Make the sprite collide with the ground layer
 		me.game.physics.arcade.overlap(me.player, me.platforms, me.gameOver, null, me);
-		me.game.physics.arcade.collide(me.player, me.breakables, me.collideTile, null, me);
+		// me.game.physics.arcade.collide(me.player, me.breakables, me.collideTile, null, me);
 		me.game.physics.arcade.collide(me.breakables, me.platforms);
 	},
 
@@ -82,19 +81,19 @@ Main.prototype = {
 		var me = this;
 	
 		// Speed up the game to make it harder
-		me.tileSpeed -= 40;
+		me.tileSpeed -= 80;
 	
 		// Work out how many tiles we need to fit across the whole screen
 		let tilesNeeded = Math.ceil(me.game.world.height / me.tileHeight);
 	
 		// Add a hole randomly somewhere
-		let hole = Math.floor(Math.random() * (tilesNeeded - 3)) + 1;
+		let hole = Math.floor(Math.random() * (tilesNeeded - 5)) + 1;
 	
 		// Keep creating tiles next to each other until we have an entire row
 		// Don't add tiles where the random hole is
 		for (let i = 0; i < tilesNeeded; i++) {
 
-			if (i != hole && i != hole + 1 && i != hole + 2 && i != hole + 3) {
+			if (i != hole && i != hole + 1 && i != hole + 2 && i != hole + 3 && i != hole + 4 && i != hole + 5) {
 				me.addTile(me.game.world.width - me.tileWidth, i * me.tileHeight, true); 
 			} else {
 				// me.addTile(me.game.world.width - me.tileWidth, i * me.tileHeight, false);
@@ -146,7 +145,10 @@ Main.prototype = {
 		me.game.physics.arcade.enable(me.player);
 
 		// Make the player fall by applying gravity
-		me.player.body.gravity.y = 2000;
+		//Wait a little bit before restarting game
+		me.game.time.events.add(1000, function(){
+			me.player.body.gravity.y = 3000;//2000;
+		}, me);
 
 		// Make the player collide with the game boundaries
 		me.player.body.collideWorldBounds = true;

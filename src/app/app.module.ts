@@ -1,62 +1,64 @@
 import { NgModule, ErrorHandler } from '@angular/core';
+import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule, Http } from '@angular/http';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
-
-import { MyApp } from './app.component';
-
-import { GamePage } from '../pages/game/game';
-
-import { Api } from '../providers/api';
-import { Items } from '../mocks/providers/items';
-import { User } from '../providers/user';
-
-import { Camera } from '@ionic-native/camera';
-import { GoogleMaps } from '@ionic-native/google-maps';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { AngularFireModule } from 'angularfire2';
+
+import { MyApp } from './app.component';
+import { GamePageModule } from '../pages/game/game.module';
+// import { LeaderboardPageModule } from '../pages/leaderboard/leaderboard.module';
+
+import { WindowRefService } from '../providers/window-ref-service';
+
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
-// The translate loader needs to know where to load i18n files
-// in Ionic's static asset pipeline.
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
+// AF2 Settings
+export const firebaseConfig = {
+  apiKey: "AIzaSyBQZurahyzElAVIYCOWOCr1j-BFmdr5Fd4",
+  authDomain: "boxed-up.firebaseapp.com",
+  databaseURL: "https://boxed-up.firebaseio.com",
+  projectId: "boxed-up",
+  storageBucket: "boxed-up.appspot.com",
+  messagingSenderId: "346518771858"
+};
+
 @NgModule({
   declarations: [
-    MyApp,
-    GamePage
+    MyApp
   ],
   imports: [
     BrowserModule,
+    GamePageModule,
+    // LeaderboardPageModule,
+    AngularFireModule.initializeApp(firebaseConfig),
     HttpModule,
+    IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
         deps: [Http]
       }
-    }),
-    IonicModule.forRoot(MyApp),
-    IonicStorageModule.forRoot()
+    })
+
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
-    GamePage
+    MyApp
   ],
   providers: [
-    Api,
-    Items,
-    User,
-    Camera,
-    GoogleMaps,
     SplashScreen,
     StatusBar,
+    WindowRefService,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
