@@ -7,8 +7,8 @@ var thisScore;
 GameTitle.prototype = {
 
 	preload: function() {
-        this.game.load.image('play', '../assets/img/play-text.png');
-		this.game.load.image('player', '../assets/img/player.png');
+        this.game.load.image('play', 'assets/img/play-text.png');
+		this.game.load.image('player', 'assets/img/player.png');
 	},
 
 	init: function(score) {
