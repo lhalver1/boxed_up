@@ -13,12 +13,12 @@ GameTitle.prototype = {
 
 	init: function(score) {
 		if (score !=0 && typeof score != 'undefined') {
-			console.log("You scored: " + score);
+			// console.log("You scored: " + score);
 			window.gameScore = score;
 			thisScore = score;
 			var scoreFont = "80px Arial";
 	
-			this.scoreLabel = this.game.add.text((this.game.world.centerX), this.game.world.height - 100, "You Scored: " + thisScore, {font: scoreFont, fill: "#fff"}); 
+			this.scoreLabel = this.game.add.text((this.game.world.centerX), this.game.world.height - 100, "You Scored: " + thisScore, {font: scoreFont, fill: "#fff", stroke: "#000", strokeThickness: 8}); 
 			this.scoreLabel.anchor.setTo(0.5, 0.5);
 			this.scoreLabel.align = 'center';
 		}
@@ -33,7 +33,8 @@ GameTitle.prototype = {
 		player.anchor.setTo(0.5, 0.5);
 
 		// Set the background color to blue
-		me.game.stage.backgroundColor = '479CDE';
+		// me.game.stage.backgroundColor = '479CDE'; //sky blue
+		me.game.stage.backgroundColor = '002b36'; //navy blue
 
 		var playButton = me.game.add.button(me.game.width/2, me.game.height/2, 'play', this.startGame, this);
         playButton.anchor.setTo(0.5, 0.5);
