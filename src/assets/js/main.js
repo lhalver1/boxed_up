@@ -10,16 +10,9 @@ Main.prototype = {
 		// Set the speed for the platforms
 		me.tileSpeed = -450;
 
-		// Set the initial score
-		me.score = -1;
-		me.createScore();
-
-		// Get the dimensions of the tile we are using
-		me.tileWidth = me.game.cache.getImage('tile').width;
-		me.tileHeight = me.game.cache.getImage('tile').height;
-
 		// Set the background color to blue
-		me.game.stage.backgroundColor = '479CDE';
+		// me.game.stage.backgroundColor = '479CDE'; //sky blue
+		me.game.stage.backgroundColor = '002b36'; //navy blue
 
 		// Enable the arcade physics system
 		me.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -30,26 +23,36 @@ Main.prototype = {
 		// Enable cursor keys so we can create some controls
 		me.cursors = me.game.input.keyboard.createCursorKeys();
 		me.game.input.onDown.add(me.onTap, me);
-		
-		me.platforms = me.game.add.group();
-		me.platforms.enableBody = true;
-		me.platforms.createMultiple(50, 'tile');
 
-		// me.breakables = me.game.add.group();
-		// me.breakables.enableBody = true;
-		// me.breakables.createMultiple(20, 'tile2'); // breakable tile
-
-		// Add an initial platform
-		//me.addPlatform();
+		//Init the walls
+		me.random = new Phaser.RandomDataGenerator([Date.now()]); //Date.now() is the seed
+		me.wallHeight = 70;
+        me.wallWidth = 70;
+		me.holeSize = 3;
+ 
+        let wallSprite = new Phaser.Graphics(me.game)
+            .beginFill(Phaser.Color.hexToRGB('#ffffff'), 1)
+            .drawRect(0, 0, me.wallWidth, me.wallHeight);
+        let wallSpriteTexture = wallSprite.generateTexture();
+        
+        me.walls = me.game.add.group();
+        me.walls.enableBody = true;
+        me.walls.createMultiple(50, wallSpriteTexture);
+        
+		me.targets = me.game.add.group();
+        me.targets.enableBody = true;
 		
 		// Add a platform every 3 seconds
-		me.timer = game.time.events.loop(3000, me.addPlatform, me);
+		me.timer = game.time.events.loop(1400, me.addWall, me);
 
 		// Add particle emitter for death animation
 		me.emitter = game.add.emitter(0, 0, 20);
 		me.emitter.makeParticles('explode');
 		me.emitter.gravity = 200;
 
+		// Set the initial score
+		me.score = 0;
+		me.createScore();
 	},
 
 	update: function() {
@@ -59,24 +62,18 @@ Main.prototype = {
  
 		// Make the sprite jump when the up key is pushed
 		if(me.cursors.up.isDown) {
-			me.player.body.velocity.y -= 120;//80;
+			me.player.body.velocity.y -= 80;
 		}
 		if (me.game.input.pointer1.isDown) {
-			me.player.body.velocity.y -= 120;//80;
-		}
-
-		if (me.platforms.centerX < me.player.centerX) {
-			me.incrementScore();
+			me.player.body.velocity.y -= 80;
 		}
 
 		// Make the sprite collide with the ground layer
-		me.game.physics.arcade.overlap(me.player, me.platforms, me.gameOver, null, me);
-		// me.game.physics.arcade.collide(me.player, me.breakables, me.collideTile, null, me);
-		me.game.physics.arcade.collide(me.breakables, me.platforms);
+		me.game.physics.arcade.overlap(me.player, me.walls, me.gameOver, null, me); //unbreakable tiles
+		me.game.physics.arcade.overlap(me.player, me.targets, me.collideTarget, null, me); //unbreakable tiles
 	},
 
-	// My Functions
-	addPlatform: function() {
+	addWall: function() {
 	
 		var me = this;
 	
@@ -84,24 +81,24 @@ Main.prototype = {
 		me.tileSpeed -= 80;
 	
 		// Work out how many tiles we need to fit across the whole screen
-		let tilesNeeded = Math.ceil(me.game.world.height / me.tileHeight);
+		let tilesNeeded = Math.ceil(me.game.world.height / me.wallHeight);
 	
 		// Add a hole randomly somewhere
-		let hole = Math.floor(Math.random() * (tilesNeeded - 5)) + 1;
+		let hole = Math.floor(Math.random() * (tilesNeeded - me.holeSize)) + 1;
 	
 		// Keep creating tiles next to each other until we have an entire row
 		// Don't add tiles where the random hole is
 		for (let i = 0; i < tilesNeeded; i++) {
 
-			if (i != hole && i != hole + 1 && i != hole + 2 && i != hole + 3 && i != hole + 4 && i != hole + 5) {
-				me.addTile(me.game.world.width - me.tileWidth, i * me.tileHeight, true); 
+			if (i != hole && i != hole + 1 && i != hole + 2) {
+				me.addTile(me.game.world.width - me.wallWidth, i * me.wallHeight, true); 
+			} else if(i === hole) {
+				me.addTile(me.game.world.width - me.wallWidth, i * me.wallHeight, false);
 			} else {
-				// me.addTile(me.game.world.width - me.tileWidth, i * me.tileHeight, false);
-			}         
+				//Still inside the hole area, do nothing but continue on
+			}   
 
 		}
-
-		me.incrementScore();
 	
 	},
 
@@ -111,9 +108,11 @@ Main.prototype = {
 	
 		// Get a tile that is not currently on screen
 		if(immovable){
-			var tile = me.platforms.getFirstDead();
+			var tile = me.walls.getFirstDead();
 		} else {
-			var tile = me.breakables.getFirstDead();
+			// var tile = me.targets.getFirstDead();
+			var tile = me.getTarget();
+			me.targets.add(tile);
 		}
 	
 		// Reset it to the specified coordinates
@@ -125,6 +124,30 @@ Main.prototype = {
 		// When the tile leaves the screen, kill it
 		tile.checkWorldBounds = true;
 		tile.outOfBoundsKill = true;    
+	},
+
+	collideTarget: function(player, target) {
+		let me = this;
+		me.incrementScore();
+
+		let targetPieceSprite = new Phaser.Graphics(me.game)
+            .beginFill(Phaser.Color.hexToRGB('#'+target.tint.toString(16), 1))
+            .drawRect(0, 0, 15, 15 );
+        let targetPieceSpriteTexture = targetPieceSprite.generateTexture();
+
+		targetPieceEmitter = game.add.emitter(0, 0, 20);
+		targetPieceEmitter.x = target.body.position.x + (target.body.width/2);
+		targetPieceEmitter.setXSpeed(me.tileSpeed);
+		targetPieceEmitter.y = target.body.position.y + (target.body.height/2);
+		targetPieceEmitter.makeParticles(targetPieceSpriteTexture);
+		targetPieceEmitter.gravity = 200;
+
+		me.game.add.tween(targetPieceEmitter).to( { emitX: 0 }, 1000, Phaser.Easing.Sinusoidal.InOut, true, 0, Number.MAX_VALUE, true);
+
+		// target.addChild(targetPieceEmitter);
+
+		targetPieceEmitter.start(true, 2000, null, 20);
+		target.kill();
 	},
 
 	collideTile: function(player, tile) {
@@ -147,7 +170,7 @@ Main.prototype = {
 		// Make the player fall by applying gravity
 		//Wait a little bit before restarting game
 		me.game.time.events.add(1000, function(){
-			me.player.body.gravity.y = 3000;//2000;
+			me.player.body.gravity.y = 2000;
 		}, me);
 
 		// Make the player collide with the game boundaries
@@ -163,7 +186,7 @@ Main.prototype = {
 	
 		var scoreFont = "100px Arial";
 	
-		me.scoreLabel = me.game.add.text((me.game.world.centerX), 100, "0", {font: scoreFont, fill: "#fff"}); 
+		me.scoreLabel = me.game.add.text((me.game.world.centerX), 100, "0", {font: scoreFont, fill: "#fff", stroke: "#000", strokeThickness: 8}); 
 		me.scoreLabel.anchor.setTo(0.5, 0.5);
 		me.scoreLabel.align = 'center';
 	
@@ -190,6 +213,39 @@ Main.prototype = {
 	
 	},
 
+	getTarget: function() {
+		let me = this;
+		me.colors = [
+			'#FFFF6D', //yellow
+			'#FF5E5E', //red
+			'#54f759', //green
+			'#6078ff', //blue
+			'#c272ff', //purple
+			'#ff56e0', //pink
+			'#56fffc', //cyan
+			'#56ffc1', //teal
+			'#ffa456', //orange
+			'#d7ff56', //neon yellow
+		];
+
+			let index = me.randomInt(0, me.colors.length-1);
+			let color = me.colors[index];
+
+			var targetSprite = new Phaser.Graphics(me.game)
+				.beginFill(Phaser.Color.hexToRGB( color ), 1)
+				.drawRect(0, 0, me.wallWidth, me.wallHeight * me.holeSize );
+			var targetSpriteTexture = targetSprite.generateTexture();
+			var tsprite = me.game.add.sprite(0,0, targetSpriteTexture);
+
+			tsprite.tint = parseInt(color.slice(1), 16);
+			tsprite.exists = false;
+			tsprite.visable = false;
+			tsprite.alive = false;
+			me.game.physics.arcade.enable(tsprite);
+
+		return tsprite;
+	},
+
 	onTap: function(){
 		var me = this;
 		me.player.body.velocity.y -=80;
@@ -202,6 +258,10 @@ Main.prototype = {
 		me.emitter.y = y;
 
 		me.emitter.start(true, 2000, null, 20);
+	},
+
+	randomInt: function(min,max) {
+		return Math.floor(Math.random()*(max-min+1)+min);
 	}
 
 };
