@@ -8,25 +8,23 @@
     </ion-row>
     <ion-row>
       <ion-col col-3>
-        <button ion-button block (click)="viewLeaderboard()">Leaderboard</button>
+        <button ion-button block outline (click)="viewLeaderboard()"><ion-icon name="podium"></ion-icon></button>
       </ion-col>
       <ion-col col-3>
-        <button ion-button block (click)="submitScore()">Submit Score</button>
+        <button ion-button block outline (click)="submitScore()"><ion-icon name="send"></ion-icon></button>
       </ion-col>
       <ion-col col-3 *ngIf="facebookUser === ''">
-        <button ion-button block icon-left color="facebook" (click)="facebookLogin()"><ion-icon name="logo-facebook"></ion-icon>Facebook</button>
+        <button ion-button block outline icon-left color="facebook" (click)="facebookLogin()"><ion-icon name="logo-facebook"></ion-icon></button>
       </ion-col>
       <ion-col col-3 *ngIf="facebookUser != ''">
-        <button ion-button block icon-left color="facebook" (click)="facebookLogout()"><ion-icon name="logo-facebook"></ion-icon>Logout</button>
+        <button ion-button block outline icon-left color="facebook" (click)="facebookLogout()"><ion-icon name="logo-facebook"></ion-icon>Logout</button>
       </ion-col>
       <ion-col col-3 *ngIf="googleUser === ''">
-        <button ion-button block icon-left color="google" (click)="googleLogin()"><ion-icon name="logo-google"></ion-icon>Google</button>
+        <button ion-button block outline icon-left color="google" (click)="googleLogin()"><ion-icon name="logo-google"></ion-icon></button>
       </ion-col>
       <ion-col col-3 *ngIf="googleUser != ''">
-        <button ion-button block icon-left color="google" (click)="googleLogout()"><ion-icon name="logo-google"></ion-icon>Logout</button>
+        <button ion-button block outline icon-left color="google" (click)="googleLogout()"><ion-icon name="logo-google"></ion-icon>Logout</button>
       </ion-col>
     </ion-row>
   </ion-grid>
-  <!--<div>Score: {{score}}</div>
-  <button (click)="updateScore()">Update Score</button>-->
 </ion-content>

@@ -46,7 +46,8 @@
       //Create a new game that fills the screen
       // game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO);
       //Create a new game instance and assign it to the 'gameArea' div
-      game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, (window.innerHeight * window.devicePixelRatio) - 45 * window.devicePixelRatio, Phaser.AUTO, 'gameArea');
+      // game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, (window.innerHeight * window.devicePixelRatio) - 45 * window.devicePixelRatio, Phaser.AUTO, 'gameArea');
+      game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, (window.innerHeight * window.devicePixelRatio) - 75 * window.devicePixelRatio, Phaser.AUTO, 'gameArea');
       
       //Add all states
       game.state.add("Boot", Boot);

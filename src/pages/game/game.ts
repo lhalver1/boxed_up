@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, ModalController } from 'ionic-angular';
 import { AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { ScreenOrientation } from '@ionic-native/screen-orientation';
 
 import { WindowRefService } from '../../providers/window-ref-service';
 import { LeaderboardPage } from '../leaderboard/leaderboard';
@@ -20,7 +21,9 @@ export class GamePage {
   googleUser: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, db: AngularFireDatabase, public afAuth: AngularFireAuth,
-    windowRef: WindowRefService, private alertCtrl: AlertController, public modalCtrl: ModalController) {
+    windowRef: WindowRefService, private alertCtrl: AlertController, public modalCtrl: ModalController, private screenOrientation: ScreenOrientation) {
+      // this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+
       this.facebookUser = '';
       this.googleUser = '';
       let user = this.afAuth.auth.currentUser;

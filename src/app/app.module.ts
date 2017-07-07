@@ -5,6 +5,7 @@ import { HttpModule, Http } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { ScreenOrientation } from '@ionic-native/screen-orientation';
 import { AngularFireModule } from 'angularfire2';
 
 import { MyApp } from './app.component';
@@ -59,6 +60,7 @@ export const firebaseConfig = {
     SplashScreen,
     StatusBar,
     WindowRefService,
+    ScreenOrientation,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
