@@ -7,7 +7,8 @@ var thisScore;
 GameTitle.prototype = {
 
 	preload: function() {
-        this.game.load.image('play', 'assets/img/play-text.png');
+		// this.game.load.image('play', 'assets/img/play-text.png');
+		this.game.load.spritesheet('play-btn', 'assets/img/play-btn-sprite-sheet.png', 190, 49);
 		this.game.load.image('player', 'assets/img/player.png');
 	},
 
@@ -15,6 +16,8 @@ GameTitle.prototype = {
 		if (score !=0 && typeof score != 'undefined') {
 			// console.log("You scored: " + score);
 			window.gameScore = score;
+			window.dispatchEvent(new CustomEvent('gameScore', {detail: score})); //invoke angular 2 change detection
+
 			thisScore = score;
 			var scoreFont = "80px Arial";
 	
@@ -36,7 +39,9 @@ GameTitle.prototype = {
 		// me.game.stage.backgroundColor = '479CDE'; //sky blue
 		me.game.stage.backgroundColor = '002b36'; //navy blue
 
-		var playButton = me.game.add.button(me.game.width/2, me.game.height/2, 'play', this.startGame, this);
+		// The numbers given in parameters are the indexes of the frames, in this order: over, out, down
+		var playButton = me.game.add.button(me.game.width/2, me.game.height/2, 'play-btn', this.startGame, this, 0, 0, 1);
+		playButton.scale.setTo(2,2);
         playButton.anchor.setTo(0.5, 0.5);
 	},
 
@@ -48,9 +53,9 @@ GameTitle.prototype = {
             if (player.y >= me.game.world.centerY+50) {
                 dir = "up";
             }
-        } else if(player.y >= me.game.world.centerY-50 && dir === "up") {
+        } else if(player.y >= me.game.world.centerY-60 && dir === "up") {
             player.y -= 2;
-            if (player.y < me.game.world.centerY-50) {
+            if (player.y < me.game.world.centerY-60) {
                 dir = "down";
             }
         }

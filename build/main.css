@@ -30050,3 +30050,11 @@ ion-navbar.toolbar {
     padding-top: calc(16px + 20px);
   }
 }
+
+page-game ion-grid, page-game [col-12], page-game .col-12 {
+  padding: 0 !important;
+}
+
+page-game .button-row {
+  background-color: #002b36 !important;
+}

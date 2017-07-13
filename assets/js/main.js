@@ -8,7 +8,7 @@ Main.prototype = {
 		var me = this;
 
 		// Set the speed for the platforms
-		me.tileSpeed = -450;
+		me.tileSpeed = -300;
 
 		// Set the background color to blue
 		// me.game.stage.backgroundColor = '479CDE'; //sky blue
@@ -28,7 +28,7 @@ Main.prototype = {
 		me.random = new Phaser.RandomDataGenerator([Date.now()]); //Date.now() is the seed
 		me.wallHeight = 70;
         me.wallWidth = 70;
-		me.holeSize = 3;
+		me.holeSize = 6;
  
         let wallSprite = new Phaser.Graphics(me.game)
             .beginFill(Phaser.Color.hexToRGB('#ffffff'), 1)
@@ -37,13 +37,13 @@ Main.prototype = {
         
         me.walls = me.game.add.group();
         me.walls.enableBody = true;
-        me.walls.createMultiple(50, wallSpriteTexture);
+        me.walls.createMultiple(250, wallSpriteTexture);
         
 		me.targets = me.game.add.group();
         me.targets.enableBody = true;
 		
 		// Add a platform every 3 seconds
-		me.timer = game.time.events.loop(1400, me.addWall, me);
+		me.timer = game.time.events.loop(3500, me.addWall, me);
 
 		// Add particle emitter for death animation
 		me.emitter = game.add.emitter(0, 0, 20);
@@ -72,13 +72,14 @@ Main.prototype = {
 		me.game.physics.arcade.overlap(me.player, me.walls, me.gameOver, null, me); //unbreakable tiles
 		me.game.physics.arcade.overlap(me.player, me.targets, me.collideTarget, null, me); //unbreakable tiles
 	},
+	change: function(){},
 
 	addWall: function() {
 	
 		var me = this;
 	
 		// Speed up the game to make it harder
-		me.tileSpeed -= 80;
+		me.tileSpeed -= 40;
 	
 		// Work out how many tiles we need to fit across the whole screen
 		let tilesNeeded = Math.ceil(me.game.world.height / me.wallHeight);
@@ -90,7 +91,8 @@ Main.prototype = {
 		// Don't add tiles where the random hole is
 		for (let i = 0; i < tilesNeeded; i++) {
 
-			if (i != hole && i != hole + 1 && i != hole + 2) {
+			// if (i != hole && i != hole + 1 && i != hole + 2 && i != hole + 3 && i != hole + 4 && i != hole + 5) {
+			if (i < hole || i > hole + (me.holeSize-1)) {
 				me.addTile(me.game.world.width - me.wallWidth, i * me.wallHeight, true); 
 			} else if(i === hole) {
 				me.addTile(me.game.world.width - me.wallWidth, i * me.wallHeight, false);
@@ -135,10 +137,10 @@ Main.prototype = {
             .drawRect(0, 0, 15, 15 );
         let targetPieceSpriteTexture = targetPieceSprite.generateTexture();
 
-		targetPieceEmitter = game.add.emitter(0, 0, 20);
-		targetPieceEmitter.x = target.body.position.x + (target.body.width/2);
+		targetPieceEmitter = game.add.emitter(0, 0, 40);
+		targetPieceEmitter.x = player.body.position.x + (player.body.width/2);
 		targetPieceEmitter.setXSpeed(me.tileSpeed);
-		targetPieceEmitter.y = target.body.position.y + (target.body.height/2);
+		targetPieceEmitter.y = player.body.position.y + (player.body.height/2);
 		targetPieceEmitter.makeParticles(targetPieceSpriteTexture);
 		targetPieceEmitter.gravity = 200;
 
@@ -146,7 +148,7 @@ Main.prototype = {
 
 		// target.addChild(targetPieceEmitter);
 
-		targetPieceEmitter.start(true, 2000, null, 20);
+		targetPieceEmitter.start(true, 4000, null, 40);
 		target.kill();
 	},
 
