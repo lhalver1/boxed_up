@@ -1,13 +1,19 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController, ModalController } from 'ionic-angular';
+import { Component, HostListener } from '@angular/core';
+import { Platform, AlertController, IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
 import { AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { ScreenOrientation } from '@ionic-native/screen-orientation';
 
-import { WindowRefService } from '../../providers/window-ref-service';
+import { AdMobPro } from '@ionic-native/admob-pro';
+
 import { LeaderboardPage } from '../leaderboard/leaderboard';
 
 import * as firebase from 'firebase/app';
+
+interface AdMobType {
+  banner: string,
+  interstitial: string
+};
 
 @IonicPage()
 @Component({
@@ -15,17 +21,56 @@ import * as firebase from 'firebase/app';
   templateUrl: 'game.html',
 })
 export class GamePage {
-  private _window: WindowRefService;
   highScores: FirebaseListObservable<any[]>;
   facebookUser: any;
   googleUser: any;
+  score: string;
+  counter: number;
+  adReady: boolean;
+  admobid: AdMobType;
+
+  @HostListener('window:gameScore', ['$event'])
+  testListener(event) {
+    debugger;
+    this.counter += 1;
+
+    if (this.counter % 3 === 0) {
+      //Show Ad
+      // this.admob.showInterstitial();
+      //this.adReady = false;
+    } else {
+      if(!this.adReady) {
+        //prepare ad
+        // this.prepareInterstitial();
+      }
+    }
+
+    this.score = event.detail;
+  }
 
   constructor(public navCtrl: NavController, public navParams: NavParams, db: AngularFireDatabase, public afAuth: AngularFireAuth,
-    windowRef: WindowRefService, private alertCtrl: AlertController, public modalCtrl: ModalController, private screenOrientation: ScreenOrientation) {
+    private admob: AdMobPro, private platform: Platform, private alertCtrl: AlertController, public modalCtrl: ModalController,
+    private screenOrientation: ScreenOrientation) {
       // this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
-
+      
       this.facebookUser = '';
       this.googleUser = '';
+      this.score = '';
+      this.counter = 0;
+      this.adReady = false;
+
+      if (this.platform.is('android')) {
+        this.admobid = { // for Android
+          banner: 'ca-app-pub-8794313592502337/8445069607',
+          interstitial: 'ca-app-pub-8794313592502337/6968336405'
+        };
+      } else if (this.platform.is('ios')) {
+        this.admobid = { // for iOS
+          banner: 'ca-app-pub-8794313592502337/3875269205',
+          interstitial: 'ca-app-pub-8794313592502337/2398536006'
+        };
+      }
+
       let user = this.afAuth.auth.currentUser;
       if (user) {
         // User is signed in.
@@ -39,49 +84,47 @@ export class GamePage {
           limitToFirst: 10 
         }
       });
-  
-      this._window = windowRef;
   }
 
   googleLogin() {
-    let _this = this;
+    let _this2 = this;
     let provider = new firebase.auth.GoogleAuthProvider();
   
     if (this.facebookUser != '') {
       this.facebookUser.linkWithPopup(provider).then(function(result) {
         // Accounts successfully linked.
         // var credential = result.credential;
-        _this.googleUser = result.user;
+        _this2.googleUser = result.user;
       }).catch(function(error) {
         // Handle Errors here.
       });
     } else {
       firebase.auth().signInWithPopup(provider).then(function(result) {
-        _this.googleUser = result.user;
+        _this2.googleUser = result.user;
       }).catch(function(error) {
         var errorMessage = error.message;
         console.log(errorMessage);
-        _this.googleUser = '';
+        _this2.googleUser = '';
       });
     }
   }
   googleLogout() {
-    let _this = this;
+    let _this2 = this;
     firebase.auth().signOut().then(function() {
-      _this.googleUser = '';
+      _this2.googleUser = '';
     }).catch(function(error) {
 
     });
   }
 
   facebookLogin() {
-    let _this = this;
+    let _this2 = this;
     let provider = new firebase.auth.FacebookAuthProvider();
     if (this.googleUser != '') {
       this.googleUser.linkWithPopup(provider).then(function(result) {
         // Accounts successfully linked.
         // var credential = result.credential;
-        _this.facebookUser = result.user;
+        _this2.facebookUser = result.user;
       }).catch(function(error) {
         // Handle Errors here.
       });
@@ -91,26 +134,33 @@ export class GamePage {
       });
       firebase.auth().signInWithPopup(provider).then(function(result) {
         // var token = result.credential.accessToken;
-        _this.facebookUser = result.user;
+        _this2.facebookUser = result.user;
       }).catch(function(error) {
         var errorMessage = error.message;
         console.log(errorMessage);
-        _this.facebookUser = '';
+        _this2.facebookUser = '';
       });
     }
   }
   facebookLogout() {
-    let _this = this;
+    let _this2 = this;
     firebase.auth().signOut().then(function() {
       // Sign-out successful.
-      _this.facebookUser = '';
+      _this2.facebookUser = '';
     }).catch(function(error) {
       // An error happened.
     });
   }
 
+  prepareInterstitial() {
+    this.admob.prepareInterstitial({
+      adId: this.admobid.interstitial,
+      isTesting: true,
+      autoShow: false
+    }).then(() => { this.adReady = true; });
+  }
+
   submitScore() {
-    let score = this._window.nativeWindow.gameScore;
 
     if (this.facebookUser == '' && this.googleUser == '') {
       let alert = this.alertCtrl.create({
@@ -119,14 +169,14 @@ export class GamePage {
         buttons: ['Ok']
       });
       alert.present();
-    } else if (typeof score === 'undefined' || score == null) {
+    } else if (typeof this.score === 'undefined' || this.score == null) {
       let alert = this.alertCtrl.create({
         title: 'No Score to submit',
         subTitle: 'You must play at least once to submit your score!',
         buttons: ['Ok']
       });
       alert.present();
-    } else if (score === 'submitted') {
+    } else if (this.score === 'submitted') {
       let alert = this.alertCtrl.create({
         title: 'Already Submitted',
         subTitle: 'You already submitted this score, please play again',
@@ -142,7 +192,7 @@ export class GamePage {
       }
 
       let alert = this.alertCtrl.create({
-        title: 'Score: ' + score,
+        title: 'Score: ' + this.score,
         message: "Name: " + name,
         buttons: [
           {
@@ -155,14 +205,14 @@ export class GamePage {
           {
             text: 'Submit',
             handler: data => {
-              let score = parseInt(this._window.nativeWindow.gameScore);
+              let scoreInt = parseInt(this.score);
               
-              if (typeof score != 'undefined' && score != null && score > 0) {
+              if (typeof scoreInt != 'undefined' && scoreInt != null && scoreInt > 0) {
                 this.highScores.push({
                   name: name,
-                  score: score
+                  score: scoreInt
                 });
-                this._window.nativeWindow.gameScore = "submitted";
+                this.score = "submitted";
               }
             }
           }

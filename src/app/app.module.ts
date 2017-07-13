@@ -4,15 +4,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule, Http } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { AdMobPro } from '@ionic-native/admob-pro';
 import { StatusBar } from '@ionic-native/status-bar';
 import { ScreenOrientation } from '@ionic-native/screen-orientation';
 import { AngularFireModule } from 'angularfire2';
 
 import { MyApp } from './app.component';
 import { GamePageModule } from '../pages/game/game.module';
-// import { LeaderboardPageModule } from '../pages/leaderboard/leaderboard.module';
-
-import { WindowRefService } from '../providers/window-ref-service';
 
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -59,8 +57,8 @@ export const firebaseConfig = {
   providers: [
     SplashScreen,
     StatusBar,
-    WindowRefService,
     ScreenOrientation,
+    AdMobPro,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]

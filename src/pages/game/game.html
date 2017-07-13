@@ -6,11 +6,13 @@
         <div id="gameArea"></div>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col col-3>
+
+    <ion-row class="button-row">
+      <ion-col col-1></ion-col>
+      <ion-col col-2>
         <button ion-button block outline (click)="viewLeaderboard()"><ion-icon name="podium"></ion-icon></button>
       </ion-col>
-      <ion-col col-3>
+      <ion-col col-2>
         <button ion-button block outline (click)="submitScore()"><ion-icon name="send"></ion-icon></button>
       </ion-col>
       <ion-col col-3 *ngIf="facebookUser === ''">
@@ -25,6 +27,7 @@
       <ion-col col-3 *ngIf="googleUser != ''">
         <button ion-button block outline icon-left color="google" (click)="googleLogout()"><ion-icon name="logo-google"></ion-icon>Logout</button>
       </ion-col>
+      <ion-col col-1></ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
