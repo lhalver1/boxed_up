@@ -31,7 +31,6 @@ export class GamePage {
 
   @HostListener('window:gameScore', ['$event'])
   testListener(event) {
-    debugger;
     this.counter += 1;
 
     if (this.counter % 3 === 0) {
