@@ -75,8 +75,12 @@ Main.prototype = {
 		me.timer = game.time.events.loop(1500, me.addWall, me);
 
 		// Add particle emitter for death animation
+		let playerPiece = new Phaser.Graphics(me.game)
+            .beginFill(Phaser.Color.hexToRGB('#'+me.player.tint.toString(16), 1))
+            .drawRect(0, 0, 15, 15 );
+        let playerPieceTexture = playerPiece.generateTexture();
 		me.emitter = game.add.emitter(0, 0, 20);
-		me.emitter.makeParticles('explode');
+		me.emitter.makeParticles(playerPieceTexture);
 		me.emitter.gravity = 200;
 
 		// Set the initial score
@@ -169,7 +173,7 @@ Main.prototype = {
             .drawRect(0, 0, 15, 15 );
         let targetPieceSpriteTexture = targetPieceSprite.generateTexture();
 
-		targetPieceEmitter = game.add.emitter(0, 0, 40);
+		targetPieceEmitter = game.add.emitter(0, 0, 20);
 		targetPieceEmitter.x = player.body.position.x + (player.body.width/2);
 		targetPieceEmitter.setXSpeed(me.tileSpeed);
 		targetPieceEmitter.setYSpeed(me.tileSpeed/2);
@@ -177,7 +181,7 @@ Main.prototype = {
 		targetPieceEmitter.makeParticles(targetPieceSpriteTexture);
 		targetPieceEmitter.gravity = 1000;
 
-		me.game.add.tween(targetPieceEmitter).to( { emitX: 0 }, 1000, Phaser.Easing.Sinusoidal.InOut, true, 0, Number.MAX_VALUE, true);
+		// me.game.add.tween(targetPieceEmitter).to( { emitX: 0 }, 1000, Phaser.Easing.Sinusoidal.InOut, true, 0, Number.MAX_VALUE, true);
 
 		// target.addChild(targetPieceEmitter);
 
@@ -200,6 +204,7 @@ Main.prototype = {
 			.drawRect(0, 0, 100, 100 );
 		var playerRectTexture = playerRect.generateTexture();
 		me.player = me.game.add.sprite(me.game.world.centerX / 2, me.game.world.centerY, playerRectTexture);
+		me.player.tint = parseInt(color.slice(1), 16);
 
 		// tsprite.tint = parseInt(color.slice(1), 16);
 
