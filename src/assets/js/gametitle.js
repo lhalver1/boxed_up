@@ -37,14 +37,6 @@ GameTitle.prototype = {
 		var me = this;
 		dir = "down";
 
-		// Music
-		me.tremLoadingMusic = me.game.add.audio('tremLoading');
-		me.tremLoadingMusic.loopFull(0.5); //param is volume
-
-		// Add the player to the game in the center of the screen
-		// player = me.game.add.sprite(me.game.world.centerX / 2, me.game.world.centerY, 'player');
-		// player.scale.setTo(2,2);
-		// player.anchor.setTo(0.5, 0.5);
 		me.createPlayer();
 
 		// Set the background color to blue
@@ -60,23 +52,24 @@ GameTitle.prototype = {
 		playButton.scale.setTo(2,2);
         playButton.anchor.setTo(0.5, 0.5);
 		
-		// The numbers given in parameters are the indexes of the frames, in this order: over, out, down
-		
 		if (typeof window.musicToggle === 'undefined' || window.musicToggle === null || window.musicToggle === 'on') {
 			window.musicToggle = 'on';
+			// The numbers given in parameters are the indexes of the frames, in this order: over, out, down
 			me.musicButton = me.game.add.button(me.game.width/2+10, (me.game.height)-188, 'music-btn', this.toggleMusic, this, 0, 0, 1);
 			me.musicButton.scale.setTo(2,2);
 			me.musicButton.anchor.setTo(0.5, 0.5);
+			// Music
+			me.tremLoadingMusic = me.game.add.audio('tremLoading');
+			me.tremLoadingMusic.loopFull(0.5); //param is volume
 		} else {
 			me.musicButton = me.game.add.button(me.game.width/2+10, (me.game.height)-188, 'music-btn', this.toggleMusic, this, 1, 1, 0);
 			me.musicButton.scale.setTo(2,2);
 			me.musicButton.anchor.setTo(0.5, 0.5);
 		}
 		
-		// The numbers given in parameters are the indexes of the frames, in this order: over, out, down
-		
-		if (typeof window.sfxToggle === 'undefined' || window.sfxToggle === null || window.sfxButton === 'on') {
+		if (typeof window.sfxToggle === 'undefined' || window.sfxToggle === null || window.sfxToggle === 'on') {
 			window.sfxToggle = 'on';
+			// The numbers given in parameters are the indexes of the frames, in this order: over, out, down
 			me.sfxButton = me.game.add.button(me.game.width/2+10, (me.game.height)-66, 'sfx-btn', this.toggleSfx, this, 0, 0, 1);
 			me.sfxButton.scale.setTo(2,2);
 			me.sfxButton.anchor.setTo(0.5, 0.5);
