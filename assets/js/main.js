@@ -40,7 +40,7 @@ Main.prototype = {
 		// SOUNDS
 		if (me.musicToggle === 'on') {
 			me.clearsideMusic = me.game.add.audio('clearside');
-			me.clearsideMusic.loopFull(0.3); // param is volume
+			me.clearsideMusic.loopFull(0.7); // param is volume
 		}
 		if (me.sfxToggle === 'on') {
 			me.explosionSfx = me.game.add.audio('explosion');
@@ -165,6 +165,7 @@ Main.prototype = {
 		let me = this;
 		me.incrementScore();
 		if (me.sfxToggle === 'on') {
+			me.passSfx.volume = 0.5;
 			me.passSfx.play();
 		}
 
@@ -248,6 +249,7 @@ Main.prototype = {
 			me.clearsideMusic.stop();
 		}
 		if (me.sfxToggle === 'on') {
+			me.explosionSfx.volume = 0.5;
 			me.explosionSfx.play();
 		}
 	

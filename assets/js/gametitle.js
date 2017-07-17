@@ -60,7 +60,7 @@ GameTitle.prototype = {
 			me.musicButton.anchor.setTo(0.5, 0.5);
 			// Music
 			me.tremLoadingMusic = me.game.add.audio('tremLoading');
-			me.tremLoadingMusic.loopFull(0.5); //param is volume
+			me.tremLoadingMusic.loopFull(0.7); //param is volume
 		} else {
 			me.musicButton = me.game.add.button(me.game.width/2+10, (me.game.height)-188, 'music-btn', this.toggleMusic, this, 1, 1, 0);
 			me.musicButton.scale.setTo(2,2);
