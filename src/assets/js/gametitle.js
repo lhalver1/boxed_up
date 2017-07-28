@@ -19,7 +19,7 @@ GameTitle.prototype = {
 	},
 
 	init: function(score) {
-		if (score !=0 && typeof score != 'undefined') {
+		if (/*score !=0 && */typeof score != 'undefined') {
 			// console.log("You scored: " + score);
 			window.gameScore = score;
 			window.dispatchEvent(new CustomEvent('gameScore', {detail: score})); //invoke angular 2 change detection
@@ -60,7 +60,7 @@ GameTitle.prototype = {
 			me.musicButton.anchor.setTo(0.5, 0.5);
 			// Music
 			me.tremLoadingMusic = me.game.add.audio('tremLoading');
-			me.tremLoadingMusic.loopFull(0.5); //param is volume
+			me.tremLoadingMusic.loopFull(1); //param is volume
 		} else {
 			me.musicButton = me.game.add.button(me.game.width/2+10, (me.game.height)-188, 'music-btn', this.toggleMusic, this, 1, 1, 0);
 			me.musicButton.scale.setTo(2,2);

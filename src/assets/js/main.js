@@ -40,13 +40,13 @@ Main.prototype = {
 		// SOUNDS
 		if (me.musicToggle === 'on') {
 			me.clearsideMusic = me.game.add.audio('clearside');
-			me.clearsideMusic.loopFull(0.3); // param is volume
+			me.clearsideMusic.loopFull(1); // param is volume
 		}
 		if (me.sfxToggle === 'on') {
 			me.explosionSfx = me.game.add.audio('explosion');
-			me.explosionSfx.volume = 0.17;
+			me.explosionSfx.volume = 0.2;
 			me.passSfx = me.game.add.audio('pass');
-			me.passSfx.volume = 0.5;
+			me.passSfx.volume = 0.3;
 		}
 
 		// Enable cursor keys so we can create some controls

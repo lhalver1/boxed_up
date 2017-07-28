@@ -9,24 +9,27 @@
 
     <ion-row class="button-row">
       <ion-col col-1></ion-col>
-      <ion-col col-2>
-        <button ion-button block outline (click)="viewLeaderboard()"><ion-icon name="podium"></ion-icon></button>
+      <ion-col col-5>
+        <button ion-button block outline (click)="viewLeaderboard()"><ion-icon name="podium"></ion-icon>&nbsp;Leaderboard</button>
       </ion-col>
-      <ion-col col-2>
-        <button ion-button block outline (click)="submitScore()"><ion-icon name="send"></ion-icon></button>
+      <ion-col col-5>
+        <button ion-button block outline (click)="submitScore()"><ion-icon name="send"></ion-icon>&nbsp;Submit</button>
       </ion-col>
-      <ion-col col-3 *ngIf="facebookUser === ''">
+
+      <!--<ion-col col-3 *ngIf="facebookUser === '' && googleUser === ''">
         <button ion-button block outline icon-left color="facebook" (click)="facebookLogin()"><ion-icon name="logo-facebook"></ion-icon></button>
       </ion-col>
-      <ion-col col-3 *ngIf="facebookUser != ''">
+      <ion-col col-3 *ngIf="facebookUser != '' && googleUser === ''">
         <button ion-button block outline icon-left color="facebook" (click)="facebookLogout()"><ion-icon name="logo-facebook"></ion-icon>Logout</button>
       </ion-col>
-      <ion-col col-3 *ngIf="googleUser === ''">
+
+      <ion-col col-3 *ngIf="googleUser === '' && facebookUser === ''">
         <button ion-button block outline icon-left color="google" (click)="googleLogin()"><ion-icon name="logo-google"></ion-icon></button>
       </ion-col>
-      <ion-col col-3 *ngIf="googleUser != ''">
+      <ion-col col-3 *ngIf="googleUser != '' && facebookUser === ''">
         <button ion-button block outline icon-left color="google" (click)="googleLogout()"><ion-icon name="logo-google"></ion-icon>Logout</button>
-      </ion-col>
+      </ion-col>-->
+      
       <ion-col col-1></ion-col>
     </ion-row>
   </ion-grid>

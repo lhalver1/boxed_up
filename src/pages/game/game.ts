@@ -25,6 +25,7 @@ export class GamePage {
   facebookUser: any;
   googleUser: any;
   score: string;
+  devicePlatform: string;
   counter: number;
   adReady: boolean;
   admobid: AdMobType;
@@ -32,15 +33,15 @@ export class GamePage {
   @HostListener('window:gameScore', ['$event'])
   testListener(event) {
     this.counter += 1;
-
-    if (this.counter % 3 === 0) {
+    console.log("counter: " + this.counter);
+    if (this.counter % 4 === 0) {
       //Show Ad
-      // this.admob.showInterstitial();
-      //this.adReady = false;
+      this.admob.showInterstitial();
+      this.adReady = false;
     } else {
       if(!this.adReady) {
         //prepare ad
-        // this.prepareInterstitial();
+        this.prepareInterstitial();
       }
     }
 
@@ -55,15 +56,18 @@ export class GamePage {
       this.facebookUser = '';
       this.googleUser = '';
       this.score = '';
-      this.counter = 0;
+      this.devicePlatform = '';
+      this.counter = 1;
       this.adReady = false;
 
       if (this.platform.is('android')) {
+        this.devicePlatform = 'Android';
         this.admobid = { // for Android
           banner: 'ca-app-pub-8794313592502337/8445069607',
           interstitial: 'ca-app-pub-8794313592502337/6968336405'
         };
       } else if (this.platform.is('ios')) {
+        this.devicePlatform = "iOS"
         this.admobid = { // for iOS
           banner: 'ca-app-pub-8794313592502337/3875269205',
           interstitial: 'ca-app-pub-8794313592502337/2398536006'
@@ -161,14 +165,7 @@ export class GamePage {
 
   submitScore() {
 
-    if (this.facebookUser == '' && this.googleUser == '') {
-      let alert = this.alertCtrl.create({
-        title: 'Must Login to Facebook or Google',
-        subTitle: 'You must login to Facebook or Google to submit your score!',
-        buttons: ['Ok']
-      });
-      alert.present();
-    } else if (typeof this.score === 'undefined' || this.score == null) {
+    if (typeof this.score === 'undefined' || this.score == null) {
       let alert = this.alertCtrl.create({
         title: 'No Score to submit',
         subTitle: 'You must play at least once to submit your score!',
@@ -184,15 +181,17 @@ export class GamePage {
       alert.present();
     } else {
       let name = '';
-      if (typeof this.facebookUser === 'undefined' || this.facebookUser === null || this.facebookUser === '') {
-        name = this.googleUser.displayName;
-      } else {
-        name = this.facebookUser.displayName;
-      }
 
       let alert = this.alertCtrl.create({
         title: 'Score: ' + this.score,
-        message: "Name: " + name,
+        message: "Please give a name for the leader board" + name,
+        inputs: [
+          {
+            name: 'name',
+            placeholder: 'Name',
+            max: 10
+          },
+        ],
         buttons: [
           {
             text: 'Cancel',
@@ -205,10 +204,14 @@ export class GamePage {
             text: 'Submit',
             handler: data => {
               let scoreInt = parseInt(this.score);
+              if(data.name.length > 15) {
+                data.name = data.name.substring(0, 15) 
+              }
               
               if (typeof scoreInt != 'undefined' && scoreInt != null && scoreInt > 0) {
                 this.highScores.push({
-                  name: name,
+                  name: data.name,
+                  platform: this.devicePlatform,
                   score: scoreInt
                 });
                 this.score = "submitted";
