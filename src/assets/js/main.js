@@ -2,13 +2,30 @@ var Main = function(game){
 
 };
 
+var playerColor;
+
 Main.prototype = {
+
+	init: function(playersColor) {
+		if (playersColor !=0 && typeof playersColor != 'undefined') {
+			playerColor = playersColor;
+		}
+	},
+
+	preload: function() {
+		this.game.load.audio('clearside', ['assets/sound/music/Clearside-SisteViator.ogg', 'assets/sound/music/Clearside-SisteViator.wav']);
+		this.game.load.audio('pass', 'assets/sound/effects/SoundPack01/Rise04.mp3');
+		this.game.load.audio('explosion', 'assets/sound/effects/explosion.mp3');
+	},
 
 	create: function() {
 		var me = this;
 
+		me.musicToggle = window.musicToggle;
+		me.sfxToggle = window.sfxToggle;
+
 		// Set the speed for the platforms
-		me.tileSpeed = -300;
+		me.tileSpeed = -780//-300;
 
 		// Set the background color to blue
 		// me.game.stage.backgroundColor = '479CDE'; //sky blue
@@ -20,14 +37,26 @@ Main.prototype = {
 		// Add the player to the screen
 		me.createPlayer();
 
+		// SOUNDS
+		if (me.musicToggle === 'on') {
+			me.clearsideMusic = me.game.add.audio('clearside');
+			me.clearsideMusic.loopFull(0.3); // param is volume
+		}
+		if (me.sfxToggle === 'on') {
+			me.explosionSfx = me.game.add.audio('explosion');
+			me.explosionSfx.volume = 0.17;
+			me.passSfx = me.game.add.audio('pass');
+			me.passSfx.volume = 0.5;
+		}
+
 		// Enable cursor keys so we can create some controls
 		me.cursors = me.game.input.keyboard.createCursorKeys();
 		me.game.input.onDown.add(me.onTap, me);
 
 		//Init the walls
 		me.random = new Phaser.RandomDataGenerator([Date.now()]); //Date.now() is the seed
-		me.wallHeight = 70;
-        me.wallWidth = 70;
+		me.wallHeight = 100;//70;
+        me.wallWidth = 100;//70;
 		me.holeSize = 6;
  
         let wallSprite = new Phaser.Graphics(me.game)
@@ -40,14 +69,18 @@ Main.prototype = {
         me.walls.createMultiple(250, wallSpriteTexture);
         
 		me.targets = me.game.add.group();
-        me.targets.enableBody = true;
+		me.targets.enableBody = true;
 		
 		// Add a platform every 3 seconds
-		me.timer = game.time.events.loop(3500, me.addWall, me);
+		me.timer = game.time.events.loop(1500, me.addWall, me);
 
 		// Add particle emitter for death animation
+		let playerPiece = new Phaser.Graphics(me.game)
+            .beginFill(Phaser.Color.hexToRGB('#'+me.player.tint.toString(16), 1))
+            .drawRect(0, 0, 15, 15 );
+        let playerPieceTexture = playerPiece.generateTexture();
 		me.emitter = game.add.emitter(0, 0, 20);
-		me.emitter.makeParticles('explode');
+		me.emitter.makeParticles(playerPieceTexture);
 		me.emitter.gravity = 200;
 
 		// Set the initial score
@@ -62,10 +95,10 @@ Main.prototype = {
  
 		// Make the sprite jump when the up key is pushed
 		if(me.cursors.up.isDown) {
-			me.player.body.velocity.y -= 80;
+			me.player.body.velocity.y -= 120;//80;
 		}
 		if (me.game.input.pointer1.isDown) {
-			me.player.body.velocity.y -= 80;
+			me.player.body.velocity.y -= 120;//80;
 		}
 
 		// Make the sprite collide with the ground layer
@@ -79,7 +112,7 @@ Main.prototype = {
 		var me = this;
 	
 		// Speed up the game to make it harder
-		me.tileSpeed -= 40;
+		// me.tileSpeed -= 40;
 	
 		// Work out how many tiles we need to fit across the whole screen
 		let tilesNeeded = Math.ceil(me.game.world.height / me.wallHeight);
@@ -131,20 +164,24 @@ Main.prototype = {
 	collideTarget: function(player, target) {
 		let me = this;
 		me.incrementScore();
+		if (me.sfxToggle === 'on') {
+			me.passSfx.play();
+		}
 
 		let targetPieceSprite = new Phaser.Graphics(me.game)
             .beginFill(Phaser.Color.hexToRGB('#'+target.tint.toString(16), 1))
             .drawRect(0, 0, 15, 15 );
         let targetPieceSpriteTexture = targetPieceSprite.generateTexture();
 
-		targetPieceEmitter = game.add.emitter(0, 0, 40);
+		targetPieceEmitter = game.add.emitter(0, 0, 20);
 		targetPieceEmitter.x = player.body.position.x + (player.body.width/2);
 		targetPieceEmitter.setXSpeed(me.tileSpeed);
+		targetPieceEmitter.setYSpeed(me.tileSpeed/2);
 		targetPieceEmitter.y = player.body.position.y + (player.body.height/2);
 		targetPieceEmitter.makeParticles(targetPieceSpriteTexture);
-		targetPieceEmitter.gravity = 200;
+		targetPieceEmitter.gravity = 1000;
 
-		me.game.add.tween(targetPieceEmitter).to( { emitX: 0 }, 1000, Phaser.Easing.Sinusoidal.InOut, true, 0, Number.MAX_VALUE, true);
+		// me.game.add.tween(targetPieceEmitter).to( { emitX: 0 }, 1000, Phaser.Easing.Sinusoidal.InOut, true, 0, Number.MAX_VALUE, true);
 
 		// target.addChild(targetPieceEmitter);
 
@@ -159,9 +196,17 @@ Main.prototype = {
 
 	createPlayer: function() {
 		var me = this;
+		
+		let color = playerColor;
 
-		// Add the player to the game in the center of the screen
-		me.player = me.game.add.sprite(me.game.world.centerX / 2, me.game.world.centerY, 'player');
+		var playerRect = new Phaser.Graphics(me.game)
+			.beginFill(Phaser.Color.hexToRGB( color ), 1)
+			.drawRect(0, 0, 100, 100 );
+		var playerRectTexture = playerRect.generateTexture();
+		me.player = me.game.add.sprite(me.game.world.centerX / 2, me.game.world.centerY, playerRectTexture);
+		me.player.tint = parseInt(color.slice(1), 16);
+
+		// tsprite.tint = parseInt(color.slice(1), 16);
 
 		// Set the players anchor point to be in the middle horizontally
 		me.player.anchor.setTo(0.5, 0.5);
@@ -170,9 +215,9 @@ Main.prototype = {
 		me.game.physics.arcade.enable(me.player);
 
 		// Make the player fall by applying gravity
-		//Wait a little bit before restarting game
+		// Wait a little bit before restarting game
 		me.game.time.events.add(1000, function(){
-			me.player.body.gravity.y = 2000;
+			me.player.body.gravity.y = 3000;
 		}, me);
 
 		// Make the player collide with the game boundaries
@@ -199,6 +244,12 @@ Main.prototype = {
  
 		me.particleBurst(me.player.body.position.x + (me.player.body.width / 2), me.player.body.position.y + (me.player.body.height / 2));
 		me.player.kill();
+		if (me.musicToggle === 'on') {
+			me.clearsideMusic.stop();
+		}
+		if (me.sfxToggle === 'on') {
+			me.explosionSfx.play();
+		}
 	
 		//Wait a little bit before restarting game
 		me.game.time.events.add(1000, function(){
@@ -250,7 +301,7 @@ Main.prototype = {
 
 	onTap: function(){
 		var me = this;
-		me.player.body.velocity.y -=80;
+		me.player.body.velocity.y -= 120;//80;
 	},
 
 	particleBurst: function(x, y) {
@@ -264,6 +315,6 @@ Main.prototype = {
 
 	randomInt: function(min,max) {
 		return Math.floor(Math.random()*(max-min+1)+min);
-	}
+	},
 
 };
