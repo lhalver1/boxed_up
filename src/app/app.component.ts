@@ -18,7 +18,8 @@ export class MyApp {
 
   @ViewChild(Nav) nav: Nav;
 
-  constructor(private translate: TranslateService, private platform: Platform, private config: Config, private statusBar: StatusBar, private splashScreen: SplashScreen) {
+  constructor(private translate: TranslateService, private platform: Platform, private config: Config,
+    private statusBar: StatusBar, private splashScreen: SplashScreen) {
     this.initTranslate();
   }
 

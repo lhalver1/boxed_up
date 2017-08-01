@@ -51,7 +51,7 @@ export class GamePage {
   constructor(public navCtrl: NavController, public navParams: NavParams, db: AngularFireDatabase, public afAuth: AngularFireAuth,
     private admob: AdMobPro, private platform: Platform, private alertCtrl: AlertController, public modalCtrl: ModalController,
     private screenOrientation: ScreenOrientation) {
-      // this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
       
       this.facebookUser = '';
       this.googleUser = '';
@@ -88,6 +88,7 @@ export class GamePage {
         }
       });
   }
+  
 
   googleLogin() {
     let _this2 = this;

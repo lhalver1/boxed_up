@@ -26,6 +26,8 @@ Main.prototype = {
 
 		// Set the speed for the platforms
 		me.tileSpeed = -780//-300;
+		me.playerGravity = 5000;
+		me.playerJump = 250;
 
 		// Set the background color to blue
 		// me.game.stage.backgroundColor = '479CDE'; //sky blue
@@ -71,8 +73,10 @@ Main.prototype = {
 		me.targets = me.game.add.group();
 		me.targets.enableBody = true;
 		
-		// Add a platform every 3 seconds
-		me.timer = game.time.events.loop(1500, me.addWall, me);
+		// Add a platform every x seconds
+		me.game.time.events.add(1000, function(){
+			me.timer = game.time.events.loop(900, me.addWall, me);
+		}, me);
 
 		// Add particle emitter for death animation
 		let playerPiece = new Phaser.Graphics(me.game)
@@ -95,10 +99,10 @@ Main.prototype = {
  
 		// Make the sprite jump when the up key is pushed
 		if(me.cursors.up.isDown) {
-			me.player.body.velocity.y -= 120;//80;
+			me.player.body.velocity.y -= me.playerJump;//80;
 		}
 		if (me.game.input.pointer1.isDown) {
-			me.player.body.velocity.y -= 120;//80;
+			me.player.body.velocity.y -= me.playerJump;//80;
 		}
 
 		// Make the sprite collide with the ground layer
@@ -216,8 +220,8 @@ Main.prototype = {
 
 		// Make the player fall by applying gravity
 		// Wait a little bit before restarting game
-		me.game.time.events.add(1000, function(){
-			me.player.body.gravity.y = 3000;
+		me.game.time.events.add(500, function(){
+			me.player.body.gravity.y = me.playerGravity;
 		}, me);
 
 		// Make the player collide with the game boundaries
