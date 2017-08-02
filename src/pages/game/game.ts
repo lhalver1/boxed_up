@@ -159,7 +159,7 @@ export class GamePage {
   prepareInterstitial() {
     this.admob.prepareInterstitial({
       adId: this.admobid.interstitial,
-      isTesting: true,
+      isTesting: false,
       autoShow: false
     }).then(() => { this.adReady = true; });
   }

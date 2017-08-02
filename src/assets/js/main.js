@@ -27,7 +27,7 @@ Main.prototype = {
 		// Set the speed for the platforms
 		me.tileSpeed = -780//-300;
 		me.playerGravity = 5000;
-		me.playerJump = 250;
+		me.playerJump = 230;
 
 		// Set the background color to blue
 		// me.game.stage.backgroundColor = '479CDE'; //sky blue
