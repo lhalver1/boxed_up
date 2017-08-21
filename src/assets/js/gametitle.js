@@ -4,6 +4,7 @@ var player;
 var playerColor;
 var dir;
 var thisScore;
+// var scaleRatio = window.devicePixelRatio / 3;
 
 GameTitle.prototype = {
 
@@ -117,9 +118,11 @@ GameTitle.prototype = {
 
 		var playerRect = new Phaser.Graphics(me.game)
 			.beginFill(Phaser.Color.hexToRGB( color ), 1)
-			.drawRect(100, 100, 100, 100 );
+			.drawRect(100, 100, 50, 50 );
+			// .drawRect(100, 100, 100, 100 );
 		var playerRectTexture = playerRect.generateTexture();
 		player = me.game.add.sprite(me.game.world.centerX / 2, me.game.world.centerY, playerRectTexture);
+		// player.scale.setTo(scaleRatio, scaleRatio);
 
 		player.exists = true;
 		player.visable = true;

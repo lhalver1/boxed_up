@@ -3,6 +3,7 @@ var Main = function(game){
 };
 
 var playerColor;
+// var scaleRatio = window.devicePixelRatio / 3;
 
 Main.prototype = {
 
@@ -25,9 +26,12 @@ Main.prototype = {
 		me.sfxToggle = window.sfxToggle;
 
 		// Set the speed for the platforms
-		me.tileSpeed = -780//-300;
-		me.playerGravity = 5000;
-		me.playerJump = 230;
+		me.tileSpeed = -600//-300;
+		// me.tileSpeed = -780//-300;
+		me.playerGravity = 4000;
+		// me.playerGravity = 5000;
+		me.playerJump = 180;
+		// me.playerJump = 230;
 
 		// Set the background color to blue
 		// me.game.stage.backgroundColor = '479CDE'; //sky blue
@@ -57,14 +61,14 @@ Main.prototype = {
 
 		//Init the walls
 		me.random = new Phaser.RandomDataGenerator([Date.now()]); //Date.now() is the seed
-		me.wallHeight = 100;//70;
-        me.wallWidth = 100;//70;
+		me.wallHeight = 50;//70;
+        me.wallWidth = 50;//70;
 		me.holeSize = 6;
  
         let wallSprite = new Phaser.Graphics(me.game)
             .beginFill(Phaser.Color.hexToRGB('#ffffff'), 1)
             .drawRect(0, 0, me.wallWidth, me.wallHeight);
-        let wallSpriteTexture = wallSprite.generateTexture();
+		let wallSpriteTexture = wallSprite.generateTexture();
         
         me.walls = me.game.add.group();
         me.walls.enableBody = true;
@@ -82,7 +86,9 @@ Main.prototype = {
 		let playerPiece = new Phaser.Graphics(me.game)
             .beginFill(Phaser.Color.hexToRGB('#'+me.player.tint.toString(16), 1))
             .drawRect(0, 0, 15, 15 );
-        let playerPieceTexture = playerPiece.generateTexture();
+		let playerPieceTexture = playerPiece.generateTexture();
+		// playerPieceTexture.scale.setTo(scaleRatio, scaleRatio);
+
 		me.emitter = game.add.emitter(0, 0, 20);
 		me.emitter.makeParticles(playerPieceTexture);
 		me.emitter.gravity = 200;
@@ -175,7 +181,7 @@ Main.prototype = {
 		let targetPieceSprite = new Phaser.Graphics(me.game)
             .beginFill(Phaser.Color.hexToRGB('#'+target.tint.toString(16), 1))
             .drawRect(0, 0, 15, 15 );
-        let targetPieceSpriteTexture = targetPieceSprite.generateTexture();
+		let targetPieceSpriteTexture = targetPieceSprite.generateTexture();
 
 		targetPieceEmitter = game.add.emitter(0, 0, 20);
 		targetPieceEmitter.x = player.body.position.x + (player.body.width/2);
@@ -205,7 +211,8 @@ Main.prototype = {
 
 		var playerRect = new Phaser.Graphics(me.game)
 			.beginFill(Phaser.Color.hexToRGB( color ), 1)
-			.drawRect(0, 0, 100, 100 );
+			.drawRect(0, 0, 50, 50 );
+			// .drawRect(0, 0, 100, 100 );
 		var playerRectTexture = playerRect.generateTexture();
 		me.player = me.game.add.sprite(me.game.world.centerX / 2, me.game.world.centerY, playerRectTexture);
 		me.player.tint = parseInt(color.slice(1), 16);
