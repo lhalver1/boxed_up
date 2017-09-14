@@ -25,7 +25,6 @@ export class GamePage {
   facebookUser: any;
   googleUser: any;
   score: string;
-  devicePlatform: string;
   counter: number;
   adReady: boolean;
   admobid: AdMobType;
@@ -56,18 +55,15 @@ export class GamePage {
       this.facebookUser = '';
       this.googleUser = '';
       this.score = '';
-      this.devicePlatform = '';
       this.counter = 1;
       this.adReady = false;
 
       if (this.platform.is('android')) {
-        this.devicePlatform = 'Android';
         this.admobid = { // for Android
           banner: 'ca-app-pub-8794313592502337/8445069607',
           interstitial: 'ca-app-pub-8794313592502337/6968336405'
         };
       } else if (this.platform.is('ios')) {
-        this.devicePlatform = "iOS"
         this.admobid = { // for iOS
           banner: 'ca-app-pub-8794313592502337/3875269205',
           interstitial: 'ca-app-pub-8794313592502337/2398536006'
@@ -212,7 +208,6 @@ export class GamePage {
               if (typeof scoreInt != 'undefined' && scoreInt != null && scoreInt > 0) {
                 this.highScores.push({
                   name: data.name,
-                  platform: this.devicePlatform,
                   score: scoreInt
                 });
                 this.score = "submitted";

@@ -26,12 +26,12 @@ Main.prototype = {
 		me.sfxToggle = window.sfxToggle;
 
 		// Set the speed for the platforms
-		me.tileSpeed = -600//-300;
-		// me.tileSpeed = -780//-300;
-		me.playerGravity = 4000;
-		// me.playerGravity = 5000;
-		me.playerJump = 180;
-		// me.playerJump = 230;
+		me.tileSpeed = -400//ios;
+		// me.tileSpeed = -780//android;
+		me.playerGravity = 4000;//ios
+		// me.playerGravity = 5000;//android
+		me.playerJump = 180;//ios
+		// me.playerJump = 230;//android
 
 		// Set the background color to blue
 		// me.game.stage.backgroundColor = '479CDE'; //sky blue
@@ -122,7 +122,8 @@ Main.prototype = {
 		var me = this;
 	
 		// Speed up the game to make it harder
-		// me.tileSpeed -= 40;
+		me.tileSpeed -= 40;//ios
+		// me.tileSpeed -= 40;//android
 	
 		// Work out how many tiles we need to fit across the whole screen
 		let tilesNeeded = Math.ceil(me.game.world.height / me.wallHeight);

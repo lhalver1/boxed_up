@@ -9,6 +9,11 @@ var thisScore;
 GameTitle.prototype = {
 
 	preload: function() {
+		this.game.load.image('background', 'assets/img/paralax/background.png');
+		this.game.load.image('city-front', 'assets/img/paralax/front.png');
+		this.game.load.image('city-mid', 'assets/img/paralax/mid.png');
+		this.game.load.image('city-back', 'assets/img/paralax/back.png');
+
 		// this.game.load.image('play', 'assets/img/play-text.png');
 		this.game.load.spritesheet('play-btn', 'assets/img/play-btn-sprite-sheet.png', 190, 49);
 		this.game.load.spritesheet('music-btn', 'assets/img/music-button.png', 190, 49);
@@ -42,6 +47,30 @@ GameTitle.prototype = {
 
 		// Set the background color to blue
 		me.game.stage.backgroundColor = '002b36'; //navy blue
+		// me.background = me.game.add.tileSprite(0, 
+		// 	me.game.height - me.game.cache.getImage('background').height, 
+		// 	me.game.width, 
+		// 	me.game.cache.getImage('background').height, 
+		// 	'background'
+		// );
+		me.cityFront = me.game.add.tileSprite(0, 
+			me.game.height - me.game.cache.getImage('city-front').height, 
+			me.game.width, 
+			me.game.cache.getImage('city-front').height, 
+			'city-front'
+		);
+		me.cityMid = me.game.add.tileSprite(0, 
+			me.game.height - me.game.cache.getImage('city-mid').height, 
+			me.game.width, 
+			me.game.cache.getImage('city-mid').height, 
+			'city-mid'
+		);
+		me.cityBack = me.game.add.tileSprite(0, 
+			me.game.height - me.game.cache.getImage('city-back').height, 
+			me.game.width, 
+			me.game.cache.getImage('city-back').height, 
+			'city-back'
+		);
 
 		// Title Image
 		me.titleImg = me.game.add.sprite(me.game.width/2, me.game.world.centerY/4, 'title');
@@ -95,6 +124,10 @@ GameTitle.prototype = {
             }
         }
 		player.angle += 5;
+
+		me.cityBack.tilePosition.x -= 0.05;
+		me.cityMid.tilePosition.x -= 0.3;
+		me.cityfront.tilePosition.x -= 0.75;  
 	},
 	
 	createPlayer: function() {
