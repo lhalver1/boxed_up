@@ -31,15 +31,15 @@ GameTitle.prototype = {
 			window.dispatchEvent(new CustomEvent('gameScore', {detail: score})); //invoke angular 2 change detection
 
 			thisScore = score;
-			var scoreFont = "80px Arial";
+			// var scoreFont = "80px Arial";
 	
-			this.scoreLabel = this.game.add.text((this.game.world.centerX), this.game.world.height - 410, "You Scored: " + thisScore, {font: scoreFont, fill: "#fff", stroke: "#000", strokeThickness: 8}); 
-			this.scoreLabel.anchor.setTo(0.5, 0.5);
-			this.scoreLabel.align = 'center';
+			// this.scoreLabel = this.game.add.text((this.game.world.centerX), this.game.world.height - 410, "You Scored: " + thisScore, {font: scoreFont, fill: "#fff", stroke: "#000", strokeThickness: 8}); 
+			// this.scoreLabel.anchor.setTo(0.5, 0.5);
+			// this.scoreLabel.align = 'center';
 		}
 	},
 
-	create: function(){
+	create: function() {
 		var me = this;
 		dir = "down";
 
@@ -53,11 +53,11 @@ GameTitle.prototype = {
 		// 	me.game.cache.getImage('background').height, 
 		// 	'background'
 		// );
-		me.cityFront = me.game.add.tileSprite(0, 
-			me.game.height - me.game.cache.getImage('city-front').height, 
+		me.cityBack = me.game.add.tileSprite(0, 
+			me.game.height - me.game.cache.getImage('city-back').height, 
 			me.game.width, 
-			me.game.cache.getImage('city-front').height, 
-			'city-front'
+			me.game.cache.getImage('city-back').height, 
+			'city-back'
 		);
 		me.cityMid = me.game.add.tileSprite(0, 
 			me.game.height - me.game.cache.getImage('city-mid').height, 
@@ -65,11 +65,11 @@ GameTitle.prototype = {
 			me.game.cache.getImage('city-mid').height, 
 			'city-mid'
 		);
-		me.cityBack = me.game.add.tileSprite(0, 
-			me.game.height - me.game.cache.getImage('city-back').height, 
+		me.cityFront = me.game.add.tileSprite(0, 
+			me.game.height - me.game.cache.getImage('city-front').height, 
 			me.game.width, 
-			me.game.cache.getImage('city-back').height, 
-			'city-back'
+			me.game.cache.getImage('city-front').height, 
+			'city-front'
 		);
 
 		// Title Image
@@ -108,6 +108,14 @@ GameTitle.prototype = {
 			me.sfxButton.scale.setTo(2,2);
 			me.sfxButton.anchor.setTo(0.5, 0.5);
 		}
+
+
+		if (typeof thisScore != 'undefined') {
+			var scoreFont = "80px Arial";
+			this.scoreLabel = this.game.add.text((this.game.world.centerX), this.game.world.height - 410, "You Scored: " + thisScore, {font: scoreFont, fill: "#fff", stroke: "#000", strokeThickness: 8}); 
+			this.scoreLabel.anchor.setTo(0.5, 0.5);
+			this.scoreLabel.align = 'center';
+		}
 	},
 
 	update: function() {
@@ -125,9 +133,9 @@ GameTitle.prototype = {
         }
 		player.angle += 5;
 
-		me.cityBack.tilePosition.x -= 0.05;
+		me.cityFront.tilePosition.x -= 0.75;
 		me.cityMid.tilePosition.x -= 0.3;
-		me.cityfront.tilePosition.x -= 0.75;  
+		me.cityBack.tilePosition.x -= 0.05;
 	},
 	
 	createPlayer: function() {

@@ -14,6 +14,11 @@ Main.prototype = {
 	},
 
 	preload: function() {
+		this.game.load.image('background', 'assets/img/paralax/background.png');
+		this.game.load.image('city-front', 'assets/img/paralax/front.png');
+		this.game.load.image('city-mid', 'assets/img/paralax/mid.png');
+		this.game.load.image('city-back', 'assets/img/paralax/back.png');
+
 		this.game.load.audio('clearside', ['assets/sound/music/Clearside-SisteViator.ogg', 'assets/sound/music/Clearside-SisteViator.wav']);
 		this.game.load.audio('pass', 'assets/sound/effects/SoundPack01/Rise04.mp3');
 		this.game.load.audio('explosion', 'assets/sound/effects/explosion.mp3');
@@ -21,6 +26,30 @@ Main.prototype = {
 
 	create: function() {
 		var me = this;
+		// me.background = me.game.add.tileSprite(0, 
+		// 	me.game.height - me.game.cache.getImage('background').height, 
+		// 	me.game.width, 
+		// 	me.game.cache.getImage('background').height, 
+		// 	'background'
+		// );
+		me.cityBack = me.game.add.tileSprite(0, 
+			me.game.height - me.game.cache.getImage('city-back').height, 
+			me.game.width, 
+			me.game.cache.getImage('city-back').height, 
+			'city-back'
+		);
+		me.cityMid = me.game.add.tileSprite(0, 
+			me.game.height - me.game.cache.getImage('city-mid').height, 
+			me.game.width, 
+			me.game.cache.getImage('city-mid').height, 
+			'city-mid'
+		);
+		me.cityFront = me.game.add.tileSprite(0, 
+			me.game.height - me.game.cache.getImage('city-front').height, 
+			me.game.width, 
+			me.game.cache.getImage('city-front').height, 
+			'city-front'
+		);
 
 		me.musicToggle = window.musicToggle;
 		me.sfxToggle = window.sfxToggle;
@@ -28,9 +57,9 @@ Main.prototype = {
 		// Set the speed for the platforms
 		me.tileSpeed = -400//ios;
 		// me.tileSpeed = -780//android;
-		me.playerGravity = 4000;//ios
+		me.playerGravity = 3500;//ios
 		// me.playerGravity = 5000;//android
-		me.playerJump = 180;//ios
+		me.playerJump = 150;//ios
 		// me.playerJump = 230;//android
 
 		// Set the background color to blue
@@ -61,9 +90,12 @@ Main.prototype = {
 
 		//Init the walls
 		me.random = new Phaser.RandomDataGenerator([Date.now()]); //Date.now() is the seed
-		me.wallHeight = 50;//70;
-        me.wallWidth = 50;//70;
-		me.holeSize = 6;
+		me.wallHeight = 50; // ios
+		// me.wallHeight = 70; //android
+        me.wallWidth = 50; //ios
+        // me.wallWidth = 50; //android;
+		me.holeSize = 8; //ios
+		// me.holeSize = 6; //android
  
         let wallSprite = new Phaser.Graphics(me.game)
             .beginFill(Phaser.Color.hexToRGB('#ffffff'), 1)
@@ -79,7 +111,7 @@ Main.prototype = {
 		
 		// Add a platform every x seconds
 		me.game.time.events.add(1000, function(){
-			me.timer = game.time.events.loop(900, me.addWall, me);
+			me.timer = game.time.events.loop(2000, me.addWall, me);
 		}, me);
 
 		// Add particle emitter for death animation
@@ -100,6 +132,10 @@ Main.prototype = {
 
 	update: function() {
 		var me = this;
+
+		me.cityFront.tilePosition.x -= 0.75;
+		me.cityMid.tilePosition.x -= 0.3;
+		me.cityBack.tilePosition.x -= 0.05;
 
 		me.player.angle +=5;
  
