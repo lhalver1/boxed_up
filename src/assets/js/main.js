@@ -158,7 +158,7 @@ Main.prototype = {
 		var me = this;
 	
 		// Speed up the game to make it harder
-		me.tileSpeed -= 40;//ios
+		me.tileSpeed -= 15;//ios
 		// me.tileSpeed -= 40;//android
 	
 		// Work out how many tiles we need to fit across the whole screen

@@ -33,7 +33,7 @@ export class GamePage {
   testListener(event) {
     this.counter += 1;
     console.log("counter: " + this.counter);
-    if (this.counter % 4 === 0) {
+    if (this.counter % 4 === 0 && this.adReady) {
       //Show Ad
       this.admob.showInterstitial();
       this.adReady = false;

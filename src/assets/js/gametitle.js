@@ -43,12 +43,11 @@ GameTitle.prototype = {
 		var me = this;
 		dir = "down";
 
-		me.createPlayer();
-
+		
 		// Set the background color to blue
 		me.game.stage.backgroundColor = '002b36'; //navy blue
 		// me.background = me.game.add.tileSprite(0, 
-		// 	me.game.height - me.game.cache.getImage('background').height, 
+		// 	0, 
 		// 	me.game.width, 
 		// 	me.game.cache.getImage('background').height, 
 		// 	'background'
@@ -72,6 +71,8 @@ GameTitle.prototype = {
 			'city-front'
 		);
 
+		me.createPlayer();
+		
 		// Title Image
 		me.titleImg = me.game.add.sprite(me.game.width/2, me.game.world.centerY/4, 'title');
 		me.titleImg.scale.setTo(4,4);
