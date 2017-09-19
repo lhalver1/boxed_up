@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Platform, AlertController, IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
 import { AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -12,7 +12,8 @@ import * as firebase from 'firebase/app';
 
 interface AdMobType {
   banner: string,
-  interstitial: string
+  interstitial: string,
+  reward: string
 };
 
 @IonicPage()
@@ -20,13 +21,14 @@ interface AdMobType {
   selector: 'page-game',
   templateUrl: 'game.html',
 })
-export class GamePage {
+export class GamePage implements OnInit {
   highScores: FirebaseListObservable<any[]>;
   facebookUser: any;
   googleUser: any;
   score: string;
   counter: number;
   adReady: boolean;
+  rewardReady: boolean;
   admobid: AdMobType;
 
   @HostListener('window:gameScore', ['$event'])
@@ -61,12 +63,14 @@ export class GamePage {
       if (this.platform.is('android')) {
         this.admobid = { // for Android
           banner: 'ca-app-pub-8794313592502337/8445069607',
-          interstitial: 'ca-app-pub-8794313592502337/6968336405'
+          interstitial: 'ca-app-pub-8794313592502337/6968336405',
+          reward: 'ca-app-pub-8794313592502337/3761334315'
         };
       } else if (this.platform.is('ios')) {
         this.admobid = { // for iOS
           banner: 'ca-app-pub-8794313592502337/3875269205',
-          interstitial: 'ca-app-pub-8794313592502337/2398536006'
+          interstitial: 'ca-app-pub-8794313592502337/2398536006',
+          reward: 'ca-app-pub-8794313592502337/8221601300'
         };
       }
 
@@ -85,6 +89,16 @@ export class GamePage {
       });
   }
   
+  onInit() { }
+
+  ionViewDidLoad() {
+    this.admob.onAdPresent().subscribe((data) => {
+        if (data.adType == 'rewardVideo') {
+          console.log( data.rewardType ); 
+          console.log( data.rewardAmount ); 
+        }
+      });
+  }
 
   googleLogin() {
     let _this2 = this;
@@ -158,6 +172,14 @@ export class GamePage {
       isTesting: false,
       autoShow: false
     }).then(() => { this.adReady = true; });
+  }
+  
+  prepareReward() {
+    this.admob.prepareRewardVideoAd({
+      adId: this.admobid.reward,
+      isTesting: false,
+      autoShow: false
+    }).then(() => { this.rewardReady = true; });
   }
 
   submitScore() {
